@@ -47,7 +47,7 @@ Jenkins是基于Java开发的一种持续集成及持续部署引擎，用于监
     
     preparation/index
     day1/index
-    day2/index
+    day2/index 
     
 
 常见问题
