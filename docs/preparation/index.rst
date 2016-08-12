@@ -4,5 +4,6 @@
 .. toctree::
    :titlesonly:
 
-   environment
    resource
+   environment
+   
