@@ -56,7 +56,5 @@ Jenkins是基于Java开发的一种持续集成及持续部署引擎，用于监
     :titlesonly:
     
     troubleshooting/index
-    
-.. _coding.net讨论组: https://coding.net/u/ups216/p/vsalm-hols/topic
 
 
