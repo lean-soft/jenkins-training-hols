@@ -62,7 +62,7 @@
     end if
 
 打开SVN中自己团队创建的Repository目录，在Repository根目录下的hooks文件夹内创建文件post-commit.bat
-文件内容如下（替换下方字体加粗文本）：
+文件内容如下（替换下方**中间的文本）：
 
 .. code-block:: bat
 
@@ -76,7 +76,7 @@
 
 配置SVN服务器挂钩 - Linux服务器
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-将下面的文本添加到SVN服务器$REPOSITORY/hooks文件夹下的post-commit文件中（替换粗体文本）：
+将下面的文本添加到SVN服务器$REPOSITORY/hooks文件夹下的post-commit文件中（替换下方**中间的文本）：
 
 .. code-block:: shell
 

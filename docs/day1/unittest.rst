@@ -37,35 +37,35 @@
 
 .. code-block:: java
 
-package com.example;
+    package com.example;
 
-/**
- * This is a class.
- */
-public class Greeter {
+    /**
+    * This is a class.
+    */
+    public class Greeter {
 
-  /**
-   * This is a constructor.
-   */
-  public Greeter() {
+    /**
+    * This is a constructor.
+    */
+    public Greeter() {
 
-  }
+    }
 
-  //TODO: Add javadoc comment
-  public String greet(String someone) {
-    return String.format("Hello, %s!", someone);
-  }
-  
-  public int calculate(String param)
-  {
-	  if(param == "a")
-		  return 1;
-	  else if(param =="b")
-		  return 2;
-	  else
-		  return 0;
-  }
-}
+    //TODO: Add javadoc comment
+    public String greet(String someone) {
+        return String.format("Hello, %s!", someone);
+    }
+    
+    public int calculate(String param)
+    {
+        if(param == "a")
+            return 1;
+        else if(param =="b")
+            return 2;
+        else
+            return 0;
+    }
+    }
 
 修改文件/maven-samples-master/single-module/src/test/java/com/example/TestGreeter.java
 修改后文本
