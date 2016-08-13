@@ -16,7 +16,7 @@
 
 .. figure:: images/jenkins-config-4security.png
 
-.. figure:: config-global-security.png
+.. figure:: images/config-global-security.png
 
 
 注册账户
@@ -24,6 +24,6 @@
 
 现在应为匿名账户登录，在Jenkins系统右上角点击注册
 
-.. figure:: sgin-up.png
+.. figure:: images/sgin-up.png
 
-.. figure:: project-base-matrix-security.png
+.. figure:: images/project-base-matrix-security.png

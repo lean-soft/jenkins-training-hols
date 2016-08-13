@@ -15,7 +15,7 @@
 打开SVN存放Repository的根目录，并添加vbs脚本，脚本名称 post-commit-hook-jenkins.vbs
  文件位置如下：
 
-.. figure:: svn-post-commit-vbs.png
+.. figure:: images/svn-post-commit-vbs.png
 
 .. code-block:: vbs
 
@@ -125,7 +125,7 @@
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 打开Jenkins Gloable Security中的Prevent Cross Site Request Forgery exploits设置， 并使用Default Crumb Issuer
 
-.. figure:: scm-commit-gloable-security.png
+.. figure:: images/scm-commit-gloable-security.png
 
 运行Job
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -161,5 +161,5 @@
 
 提交修改后，执行结果中会显示提交的变更
 
-.. figure:: commit-trigger-build-result.png
+.. figure:: images/commit-trigger-build-result.png
 

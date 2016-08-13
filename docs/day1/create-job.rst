@@ -19,7 +19,7 @@
 
     例如：TrainingTeam1
 
-.. figure:: svn-create-repository.png
+.. figure:: images/svn-create-repository.png
 
 组成员使用自己的用户名在Repository上创建自己的文件夹，
 
@@ -30,7 +30,7 @@
 并将样例代码上传到以自己用户名命名的文件夹下（**样例项目从培训讲师处获得**）
 上传后代码展示样式如下：
 
-.. figure:: svn-repository-view.png
+.. figure:: images/svn-repository-view.png
 
 创建Job
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -40,14 +40,14 @@ Job名称使用: 成员名 + MavenProjectCI
 
     例如：WilsonBoMavenProjectCI
 
-.. figure:: create-job.png
+.. figure:: images/create-job.png
 
 配置Source Control Management
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 将SVN服务器自己所属团队的Repository下的自己的用户名文件夹的地址拷贝到 SVN设置的 Repository URL中，注意URL可以在Repository下的子目录中。
 
-.. figure:: job-config-svn.png
+.. figure:: images/job-config-svn.png
 
 在Credentials中点击Add按钮添加Credential，可以按照用户连接SVN方式添加Credential。
 
@@ -55,11 +55,11 @@ Job名称使用: 成员名 + MavenProjectCI
 
     培训环境使用用户名密码形式连接SVN服务器
     
-.. figure:: job-svn-add-credential.png
+.. figure:: images/job-svn-add-credential.png
 
 Repository browser中选择SVN服务器类型， 并将Repository地址复制到Repository browser文本框中，这样在Job运行记录中的变更中的svn提交版本号会自带超链接，点击可以直接跳转到svn相应提交。
 
-.. figure:: job-svn-browse.png
+.. figure:: images/job-svn-browse.png
 
 配置Build Triggers
 ~~~~~~~~~~~~~~~~~~~~~~
@@ -88,24 +88,24 @@ poll SCM 定时会去SCM中获取提交，如果在SCM中存在没有构建的�
 
 当前Job设置
 
-.. figure:: job-poll-scm-scehdule.png
+.. figure:: images/job-poll-scm-scehdule.png
 
 配置Maven
 ~~~~~~~~~~~~~~
 添加Maven的构建步骤，并选择在**Jenkins -> Config System**中的Maven设置
 
-.. figure:: job-maven.png
+.. figure:: images/job-maven.png
 
 选择在Jenkins中配置的Maven。配置**Goals: clean package**，构建 java时的Maven运行命令将为：**mvn clean package**
 
 
-.. figure:: job-maven-config.png
+.. figure:: images/job-maven-config.png
 
 运行Job，并查看结果
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 在Jenkins首页触发Job运行， 选择**Build Now**
 
-.. figure:: trigger-build.png
+.. figure:: images/trigger-build.png
 
 .. note::
 

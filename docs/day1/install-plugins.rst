@@ -11,7 +11,7 @@
 
 请检查已经安装的插件，如果不是最新版本请更新插件。（请在讲师处获取需要安装的插件安装包）
 
-.. figure:: system-config-4installplugin.png
+.. figure:: images/system-config-4installplugin.png
 
 按照如下插件列表顺序安装：
 * Test-result-analyzer.hpi
@@ -40,4 +40,4 @@
 
 安装完成后再浏览器中输入http://JenkinsServer/restart 重启Jenkins
 
-.. figure:: restart-jenkins.png
+.. figure:: images/restart-jenkins.png

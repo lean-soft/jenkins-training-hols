@@ -11,7 +11,7 @@
 
 在Jenkins中配置系统及插件变量
 
-.. figure:: config-jenkins-4system.png
+.. figure:: images/config-jenkins-4system.png
 
 配置Jenkins
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -22,7 +22,7 @@
 
     不建议在Jenkins的master节点上运行Job，本次培训只是样例。实际生产环境建议Job运行在其他节点上。
 
-.. figure:: jenkins-general-config-executor.png
+.. figure:: images/jenkins-general-config-executor.png
 
 配置JDK
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -30,19 +30,19 @@
 添加JDK配置。
 可以根据需要添加多个JDK配置，比如：不同节点如果JDK安装位置不同，就需要在Jenkins中配置不同的JDK设置。
 
-.. figure:: jenkins-config-jdk.png
+.. figure:: images/jenkins-config-jdk.png
 
-.. figure:: jenkins-config-jdk-config.png
+.. figure:: images/jenkins-config-jdk-config.png
 
 配置Maven
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 添加Maven配置。
 可以根据需要添加多个Maven配置，比如：不同节点如果Maven安装位置不同，就需要在Jenkins中配置不同的Maven设置。
 
-.. figure:: jenkins-config-maven.png
+.. figure:: images/jenkins-config-maven.png
 
 配置SVN
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 选择正确SVN版本
 
-.. figure:: jenkins-config-svn.png
+.. figure:: images/jenkins-config-svn.png

@@ -28,17 +28,17 @@ SonarQube 静态代码检查
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 添加SonarQube服务器
 
-.. figure:: jenkins-config-sonar.png
+.. figure:: images/jenkins-config-sonar.png
 
 按照Job运行的节点操作系统类型，添加SonarQube Scanner。名称为：SonarScanner + 节点名
 
-.. figure:: sonar-scanner-node.png
+.. figure:: images/sonar-scanner-node.png
 
 修改Job配置， 添加Sonar插件
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 按照Job运行的节点操作系统类型选择SonarQube Scanner
 
-.. figure:: job-config-sonar-scanner.png
+.. figure:: images/job-config-sonar-scanner.png
 
 修改**Analysis properties**属性，输入如下配置脚本：
 
@@ -66,15 +66,15 @@ SonarQube 静态代码检查
 运行查看扫描结果
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-.. figure:: job-result-sonar.png
+.. figure:: images/job-result-sonar.png
 
-.. figure:: sonar-result.png
+.. figure:: images/sonar-result.png
 
 在Job的SonarQube配置中使用全局变量设置版本
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 可以在SonarQube Scanner运行配置中使用SVN提交版本来设置SonarQube扫描结果版本
 
-.. figure:: job-sonar-version.png
+.. figure:: images/job-sonar-version.png
 
 .. code-block:: text
 

@@ -13,22 +13,22 @@
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 添加测试报告发布插件
 
-.. figure:: unit-test-result-publisher.png
+.. figure:: images/unit-test-result-publisher.png
 
 使用文件通配符查找需要发布的单元测试结果，单元测试结果为xml文件
 
-.. figure:: unit-test-result-prefix.png
+.. figure:: images/unit-test-result-prefix.png
 
 保存修改
 
 运行Job，查看结果
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-.. figure:: unit-test-job-result.png
+.. figure:: images/unit-test-job-result.png
 
 安装**Test Results Analyzer Plugin**后，可以在Job页面使用单元测试结果分析插件查看图形化展示单元测试结果
 
-.. figure:: test-result-analyzer.png
+.. figure:: images/test-result-analyzer.png
 
 添加单元测试，查看测试结果
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -116,7 +116,7 @@ public class Greeter {
 签入修改文件，编写注释。
 查看单元测试分析
 
-.. figure:: new-failed-unite-test-result.png
+.. figure:: images/new-failed-unite-test-result.png
 
 在新加的单元测试方法中修改Bug
 **Change**:

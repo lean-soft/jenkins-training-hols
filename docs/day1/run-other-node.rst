@@ -16,36 +16,36 @@
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 创建节点
 
-.. figure:: jenkins-config-create-node.png
+.. figure:: images/jenkins-config-create-node.png
 
-.. figure:: create-node.png
+.. figure:: images/create-node.png
 
-.. figure:: node-name.png
+.. figure:: images/node-name.png
 
 在不同平台选择不同Launch Method，详细如下：
 
 * 配置Windows服务器节点， Labels 设置为second
 使用Launch slave agents via java Web Start
 
-.. figure:: node-lable-windows.png
+.. figure:: images/node-lable-windows.png
 
 * 配置Linux服务器节点， Labels设置为m2。
 使用Launch slave agents on Unix machines via SSH方式连接到Jenkins，可以使用SSH方式，**如果使用username和password方式必须使用root账户**
 
-.. figure:: note-config-linux.png
+.. figure:: images/note-config-linux.png
 
 如果是在Windows服务器运行Jenkins Slaver，请使用在浏览器中打开配置节点页面，然后运行slaver
 
-.. figure:: note-run-slaver-windows.png
+.. figure:: images/note-run-slaver-windows.png
 
 添加Jenkins配置
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 打开Jenkins配置页面**Jenkins -> Manage Jenkins -> Configure System** 添加JDK与Maven配置。
 将JAVA_HOME与MAVEN_HOME路径设置为节点服务器上的$JAVA_HOME与$MAVEN_HOME，配置名为：JDK\Maven + 节点名
 
-.. figure:: jenkins-config-note-jdk.png
+.. figure:: images/jenkins-config-note-jdk.png
 
-.. figure:: jenkins-config-note-maven.png
+.. figure:: images/jenkins-config-note-maven.png
 
 保存修改
 
@@ -53,17 +53,17 @@
 ~~~~~~~~~~~~~~~~~~~~~~~~~
 修改自己创建的Job
 
-.. figure:: config-job-note.png
+.. figure:: images/config-job-note.png
 
 通过Label指定构建要在哪个节点上运行。
 
-.. figure:: config-job-label.png
+.. figure:: images/config-job-label.png
 
 选择刚刚在**Jenkins -> Manage Jenkins -> Configure System**配置的试用于second节点的JDK与Maven配置
 
-.. figure:: job-node-jdk.png
+.. figure:: images/job-node-jdk.png
 
-.. figure:: job-node-maven.png
+.. figure:: images/job-node-maven.png
 
 保存修改
 
@@ -71,7 +71,7 @@
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 在Jenkins首页触发Job运行， 选择**Build Now**
 
-.. figure:: trigger-build.png
+.. figure:: images/trigger-build.png
 
 设置Job运行在master服务器上
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
