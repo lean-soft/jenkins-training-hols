@@ -14,6 +14,7 @@
 .. figure:: images/system-config-4installplugin.png
 
 按照如下插件列表顺序安装：
+
 * Test-result-analyzer.hpi
 * Cobertura.hpi
 * Jquery.hpi
