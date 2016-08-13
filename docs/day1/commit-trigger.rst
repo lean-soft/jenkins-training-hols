@@ -17,7 +17,7 @@
 
 .. figure:: images/svn-post-commit-vbs.png
 
-.. code-block:: vbs
+.. code-block:: vb
 
     repos   = WScript.Arguments.Item(0)
     rev     = WScript.Arguments.Item(1)

@@ -15,21 +15,21 @@
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 添加Maven命令的Goals: cobertura:cobertura
 
-.. figure:: code-coverage-maven-goals
+.. figure:: images/code-coverage-maven-goals
 
 添加post-build action， 发布Cobertura报告
 
-.. figure:: publish-code-coverage-result.png
+.. figure:: images/publish-code-coverage-result.png
 
 运行Job，查看覆盖率结果
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 安装Cobertura插件后可以在Job的运行结果页面查看Cobertura单元测试覆盖率结果
 
-.. figure:: job-code-coverage-result.png
+.. figure:: images/job-code-coverage-result.png
 
 单元测试覆盖率详细结果
 
-.. figure:: job-code-coverage-result-detail.png
+.. figure:: images/job-code-coverage-result-detail.png
 
 添加方法查看覆盖率变化
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -74,6 +74,6 @@
 
 签入代码，然后查看单元测试覆盖率变化
 
-.. figure:: code-coverage-change.png
+.. figure:: images/code-coverage-change.png
 
 
