@@ -19,6 +19,7 @@
 根据服务器性能配置# of executors数量
 
 .. note::
+
     不建议在Jenkins的master节点上运行Job，本次培训只是样例。实际生产环境建议Job运行在其他节点上。
 
 .. figure:: jenkins-general-config-executor.png

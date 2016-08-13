@@ -1,114 +1,165 @@
-TFS 安装和配置
------------------
+配置SCM提交主动触发Jenkins构建
+----------------------------------
 
 .. attention::
     
-    文档内容将与最新版TFS企业版保持同步，请确保你所使用的TFS版本与本文档的适用范围一致，再参照本文档进行TFS的安装和配置，不同版本的TFS企业版的安装配置虽然区别不大，但对于企业部署，一个很小的差异都可能造成生产系统的问题。
+    文档内容将与Jenkins 1.642.4保持同步，请确保你所使用的Jenkins版本与本文档的适用范围一致，再参照本文档进行Jenkins的安装和配置，以防出现联系过程中系统不对称导致的问题。
     
     本文档适用于：
     
-    * Team Foundation Server 2015 Update 2. 
+    * Jenkins v 1.642.4
     
-TFS 技术架构
+配置SVN服务器挂钩 - Windows服务器
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-服务器架构
-^^^^^^^^^^^^^^^^^^^^^^
+打开SVN存放Repository的根目录，并添加vbs脚本，脚本名称 post-commit-hook-jenkins.vbs
+ 文件位置如下：
 
-TFS 的服务器分为核心服务和外围服务，核心服务采用2层架构，分别为数据层和应用层。
+.. figure:: svn-post-commit-vbs.png
 
-* 数据层：采用SQL Server的数据库服务器提供数据存储，数据分析和多维数据处理能力。
-* 应用层：采用IIS所提供的Web服务器提供网站访问和Web Service供内部服务和外部服务调用，同时提供符合RestAPI标准的服务。
+.. code-block:: vbs
 
-.. figure:: images/tfs-server-arch-01.png
+    repos   = WScript.Arguments.Item(0)
+    rev     = WScript.Arguments.Item(1)
+    svnlook = WScript.Arguments.Item(2)
+    jenkins = WScript.Arguments.Item(3)
 
-外围服务部分，TFS可以和以下服务进行集成提供不同的功能
+    Set shell = WScript.CreateObject("WScript.Shell")
 
-* SQL Reporting Service (SSRS) 提供报表服务
-* SharePoint 提供门户功能
-* Build Service 提供自动化和持续集成功能
-* System Center Virutal Machine Manager (SCVMM) 虚拟化平台管理，提供实验室环境管理功能
-* Proxy Server 提供分布式代理服务器功能
+    Set uuidExec = shell.Exec(svnlook & " uuid " & repos)
+    Do Until uuidExec.StdOut.AtEndOfStream
+    uuid = uuidExec.StdOut.ReadLine()
+    Loop
+    Wscript.Echo "uuid=" & uuid
 
-.. figure:: images/tfs-server-arch-02.png
+    Set changedExec = shell.Exec(svnlook & " changed --revision " & rev & " " & repos)
+    Do Until changedExec.StdOut.AtEndOfStream
+    changed = changed + changedExec.StdOut.ReadLine() + Chr(10)
+    Loop
+    Wscript.Echo "changed=" & changed
 
+    url = jenkins + "crumbIssuer/api/xml?xpath=concat(//crumbRequestField,"":"",//crumb)"
+    Wscript.Echo url
+    Set http = CreateObject("Microsoft.XMLHTTP")
+    http.open "GET", url, False
+    http.setRequestHeader "Content-Type", "text/plain;charset=UTF-8"
+    http.send
+    crumb = null
+    if http.status = 200 then
+    crumb = split(http.responseText,":")
+    end if
+    Wscript.Echo http.responseText
+    url = jenkins + "subversion/" + uuid + "/notifyCommit?rev=" + rev
+    Wscript.Echo url
 
-客户端架构
-^^^^^^^^^^^^^^^^^^^^^^
+    Set http = CreateObject("Microsoft.XMLHTTP")
+    http.open "POST", url, False
+    http.setRequestHeader "Content-Type", "text/plain;charset=UTF-8"
+    if not isnull(crumb) then 
+    http.setRequestHeader crumb(0),crumb(1)
+    http.send changed
+    Wscript.Echo " HTTP Status: " & http.status & ". Body: " & http.responseText
+    end if
 
-TFS 客户端通过多种方式为用户访问提供方便，包括：
+打开SVN中自己团队创建的Repository目录，在Repository根目录下的hooks文件夹内创建文件post-commit.bat
+文件内容如下（替换下方字体加粗文本）：
 
-* TFS 网站 兼容任何主流浏览器的访问能力，跨平台访问
-* Viusal Studio 客户端，通过 **团队资源管理器** 提供集成式的IDE内访问
-* Eclipse/IntelliJ 客户端， 通过 **Team Explorer Everywhere（TEE）** 插件提供级城市的IDE内访问，跨平台访问
-* Office 集成组件，提供Excel/Project内直接访问TFS的能力
-* 任何标准的Git客户端，提供Git分布式源代码管理能力，跨平台访问
-* Test Controller (测试控制器) 提供自动化UI测试，压力测试和性能测试功能
+.. code-block:: bat
 
-.. figure:: images/tfs-server-arch-03.png
+    SET REPOS=%1
+    SET REV=%2
+    SET CSCRIPT=%windir%\system32\cscript.exe
+    SET VBSCRIPT=**post-commit-hook-jenkins.vbs脚本路径**
+    SET SVNLOOK=**svnlook.exe路径 (默认为C:\Program Files\VisualSVN Server\bin\svnlook.exe)**
+    SET JENKINS=**Jenkins服务器URL地址**
+    "%CSCRIPT%" "%VBSCRIPT%" "%REPOS%" %2 "%SVNLOOK%" %JENKINS%
 
-操作系统兼容性
-^^^^^^^^^^^^^^^^^^^^^^
+配置SVN服务器挂钩 - Linux服务器
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+将下面的文本添加到SVN服务器$REPOSITORY/hooks文件夹下的post-commit文件中（替换粗体文本）：
 
-TFS服务器端兼容以下版本的操作系统
+.. code-block:: shell
 
-* Windows Server 2012 R2 (Essentials, Standard, Datacenter)
-* Windows Server 2012
-* Windows Server 2008 R2 (minimum SP1) (Standard, Enterprise, Datacenter)
+    #!/bin/sh
+    REPOS="$1"
+    REV="$2"
 
-TFS客户端支持以下版本的操作系统
+    # No environment is passed to svn hook scripts; set paths to external tools explicitly:
+    WGET=**/usr/bin/wget**
+    SVNLOOK=**/usr/bin/svnlook**
 
-* Windows 10 (Home, Professional, Enterprise)
-* Windows 8.1 (Basic, Professional, Enterprise)
-* Windows 8
-* Windows 7 (minimum SP1) (Home Premium, Professional, Enterprise, Ultimate)
+    # If your server requires authentication, it is recommended that you set up a .netrc file to store your username and password
+    # Better yet, since Jenkins v. 1.426, use the generated API Token in place of the password
+    # See https://wiki.jenkins-ci.org/display/JENKINS/Authenticating+scripted+clients
+    # Since no environment is passed to hook scripts, you need to set $HOME (where your .netrc lives)
+    # By convention, this should be the home dir of whichever user is running the svn process (i.e. apache)
+    HOME=/var/www/
 
-以下操作系统通过 Team Explorer Everywhere 支持 （见以下*Java Runtime需求）
+    UUID=`$SVNLOOK uuid $REPOS`
+    NOTIFY_URL="subversion/${UUID}/notifyCommit?rev=${REV}"
+    CRUMB_ISSUER_URL='crumbIssuer/api/xml?xpath=concat(//crumbRequestField,":",//crumb)'
 
-* Linux with GLIBC 2.3 to 2.11 (x86, x86_64, PowerPC)
-* Mac OS X 10.8+ (Intel Only)
-* Solaris 8 to 11 (SPARC x64)
-* AIX 5.2 to 7.1 (32 and 64 bit)
-* HP-UX 11i v1 to v3 (PA-RISC, Itanium)
+    function notifyCI {
+        # URL to Hudson/Jenkins server application (with protocol, hostname, port and deployment descriptor if needed)
+        CISERVER=$1
 
-**Java Runtime 需求** 
+        # Check if "[X] Prevent Cross Site Request Forgery exploits" is activated
+        # so we can present a valid crumb or a proper header
+        HEADER="Content-Type:text/plain;charset=UTF-8"
+        CRUMB=`$WGET --auth-no-challenge --output-document - ${CISERVER}/${CRUMB_ISSUER_URL}`
+        if [ "$CRUMB" != "" ]; then HEADER=$CRUMB; fi
 
-* Oracle Java 1.6+ or IBM Java 1.6+ on Windows 
-* Apple Java 1.6+ on Mac OS X
-* Oracle Java 1.6+ on Linux or Solaris
-* IBM Java 1.6+ on Linux or AIX
-* HP Java 1.6+ on HP-UX
+        $WGET \
+            --auth-no-challenge \
+            --header $HEADER \
+            --post-data "`$SVNLOOK changed --revision $REV $REPOS`" \
+            --output-document "-"\
+            --timeout=2 \
+            ${CISERVER}/${NOTIFY_URL}
+    }
 
-TFS 部署模式
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    # The code above was placed in a function so you can easily notify multiple Jenkins/Hudson servers: 
+    notifyCI "**Jenkins服务器URL地址**"
 
-TFS 可以支持几人到几千人的不同团队规模，提供不同的单机部署模式和多级集群部署模式满足小团队或者大型企业的需求。下图中列出了小型，中型和大型三种不同的部署模式，以及相关的硬件需求和可支持的团队大小。
+配置Jenkins Global Security
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+打开Jenkins Gloable Security中的Prevent Cross Site Request Forgery exploits设置， 并使用Default Crumb Issuer
 
-.. figure:: images/tfs-server-deploy-model-01.png
+.. figure:: scm-commit-gloable-security.png
 
-高可用性方案
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+运行Job
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+现在开始可以直接编辑SVN源代码文件，提交修改时会自动触发Jenkins构建。
+修改pom.xml文件中的注释，提交修改（要写注释），查看生成结果。
 
-对于需要持续提供安全可靠的大型团队来说，TFS提供灵活的高可用性方案可供选择，以下列出最常用的高可用性部署方案。也可以根据企业的要求对以下方案进行定制，满足不同的可维护性要求和可用性要求。
+.. code-block:: xml
 
-.. figure:: images/tfs-server-deploy-model-02.png
+    <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+            xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 
-数据备份方案
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-    
-研发相关数据对任何企业都是关键的资产，TFS提供内置的数据备份和恢复方案供系统管理员使用完成日常的数据备份和简单易操作的数据恢复。
+    <modelVersion>4.0.0</modelVersion>
 
-.. figure:: images/tfs-server-deploy-model-03.png
+    <groupId>com.example.maven-samples</groupId>
+    <artifactId>parent</artifactId>
+    <packaging>pom</packaging>
+    <version>1.0-SNAPSHOT</version>
+    <name>Parent</name>
+    <description>Just a pom that makes it easy to build both projects at the same time. 
+        SCM trigger Jenkins build
+    </description>
 
-TFS 安装说明
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    <modules>
+        <module>multi-module</module>
+        <module>single-module</module>
+    </modules>
 
-.. toctree::
-   :titlesonly:
+    <prerequisites>
+        <maven>3.3.9</maven>
+    </prerequisites>
 
-   tfs-installation-ad
-   tfs-installation-accounts
-   tfs-installation-sqlserver
-   tfs-installation-small
-   tfs-installation-middle
-   tfs-installation-large
+    </project>
+
+提交修改后，执行结果中会显示提交的变更
+
+.. figure:: commit-trigger-build-result.png
+

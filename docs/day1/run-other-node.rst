@@ -73,3 +73,10 @@
 
 .. figure:: trigger-build.png
 
+设置Job运行在master服务器上
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+上边的测试说明了Jenkins是可以支持多节点跨平台运行，下面我们再将Job的运行节点设置改到master服务器上。
+
+.. note::
+
+    将JDK与MAVEN的运行改为Linux平台匹配的配置
