@@ -36,14 +36,18 @@ sudo cp -r apache-maven-3.3.9 /opt/maven
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 在/etc/environment文件中设置如下
+
 .. code-block:: shell
+
     JAVA_HOME=/opt/jdk
     TOMCAT_HOME=/opt/tomcat
     MAVEN_HOME=/opt/maven
     PATH="$JAVA_HOME/bin:$TOMCAT_HOME/bin:$MAVEN_HOME/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/games:/usr/local/games"
  
 打开环境变量文件 sudo vi ~/.bashrc，并在文件末尾加上如下代码
+
 .. code-block:: shell
+
     export JAVA_HOME=/opt/jdk
     export JRE_HOME=${JAVA_HOME}/jre
     export CLASSPATH=.:${JAVA_HOME}/lib:${JRE_HOME}/lib
@@ -53,12 +57,13 @@ sudo cp -r apache-maven-3.3.9 /opt/maven
     export MAVEN_HOME=/opt/maven
     export PATH=${MAVEN_HOME}/bin:$PATH
 
-将jenkins.war文件拷贝到tomcat的webapps文件夹下，并启动tomcat
+启动Jenkins服务
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     
-清楚webapps文件夹下其他文件 sudo rm -r 文件夹名
+将jenkins.war文件拷贝到tomcat的webapps文件夹下。
+删除webapps文件夹下其他文件默认文件夹 sudo rm -r 文件夹名
 $TOMCAT_HOME/bin文件夹下运行： startup.sh
 
-..note::
+.. note::
     如果Permission Denied 使用命令 sudo chown -R 用户名 文件夹名获得权限
 
