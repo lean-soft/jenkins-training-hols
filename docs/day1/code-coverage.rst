@@ -15,7 +15,7 @@
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 添加Maven命令的Goals: cobertura:cobertura
 
-.. figure:: images/code-coverage-maven-goals
+.. figure:: images/code-coverage-maven-goals.png
 
 添加post-build action， 发布Cobertura报告
 
