@@ -12,7 +12,7 @@
 在Jenkins配置中添加配置JIRA服务器配置
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-.. figure:: images/images/jenkins-config-jira.png
+.. figure:: images/jenkins-config-jira.png
 
 .. note::
 
@@ -24,6 +24,6 @@
 在任意文件中添加注释，提交修改，并在注释中填写 JIRAProjectKey-IssueId 加文本注释。
 签入后在Job页面点击Chan 
 
-.. figure:: job-result-changes-jira-like.png
+.. figure:: images/job-result-changes-jira-like.png
 
 点击超链接 JEN-1可以打开JIRA Issue页面
