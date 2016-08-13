@@ -1,114 +1,225 @@
-TFS 安装和配置
------------------
+Jenkins 运行自动化测试
+----------------------------------
 
 .. attention::
     
-    文档内容将与最新版TFS企业版保持同步，请确保你所使用的TFS版本与本文档的适用范围一致，再参照本文档进行TFS的安装和配置，不同版本的TFS企业版的安装配置虽然区别不大，但对于企业部署，一个很小的差异都可能造成生产系统的问题。
+    文档内容将与Jenkins 1.642.4保持同步，请确保你所使用的Jenkins版本与本文档的适用范围一致，再参照本文档进行Jenkins的安装和配置，以防出现联系过程中系统不对称导致的问题。
     
     本文档适用于：
     
-    * Team Foundation Server 2015 Update 2. 
+    * Jenkins v 1.642.4
     
-TFS 技术架构
+检查SecondNode是否正常运行
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-服务器架构
-^^^^^^^^^^^^^^^^^^^^^^
-
-TFS 的服务器分为核心服务和外围服务，核心服务采用2层架构，分别为数据层和应用层。
-
-* 数据层：采用SQL Server的数据库服务器提供数据存储，数据分析和多维数据处理能力。
-* 应用层：采用IIS所提供的Web服务器提供网站访问和Web Service供内部服务和外部服务调用，同时提供符合RestAPI标准的服务。
-
-.. figure:: images/tfs-server-arch-01.png
-
-外围服务部分，TFS可以和以下服务进行集成提供不同的功能
-
-* SQL Reporting Service (SSRS) 提供报表服务
-* SharePoint 提供门户功能
-* Build Service 提供自动化和持续集成功能
-* System Center Virutal Machine Manager (SCVMM) 虚拟化平台管理，提供实验室环境管理功能
-* Proxy Server 提供分布式代理服务器功能
-
-.. figure:: images/tfs-server-arch-02.png
+如果SecondNode没有正常运行，请按照 ::doc:`../day1/run-other-node` 重新配置
 
 
-客户端架构
-^^^^^^^^^^^^^^^^^^^^^^
-
-TFS 客户端通过多种方式为用户访问提供方便，包括：
-
-* TFS 网站 兼容任何主流浏览器的访问能力，跨平台访问
-* Viusal Studio 客户端，通过 **团队资源管理器** 提供集成式的IDE内访问
-* Eclipse/IntelliJ 客户端， 通过 **Team Explorer Everywhere（TEE）** 插件提供级城市的IDE内访问，跨平台访问
-* Office 集成组件，提供Excel/Project内直接访问TFS的能力
-* 任何标准的Git客户端，提供Git分布式源代码管理能力，跨平台访问
-* Test Controller (测试控制器) 提供自动化UI测试，压力测试和性能测试功能
-
-.. figure:: images/tfs-server-arch-03.png
-
-操作系统兼容性
-^^^^^^^^^^^^^^^^^^^^^^
-
-TFS服务器端兼容以下版本的操作系统
-
-* Windows Server 2012 R2 (Essentials, Standard, Datacenter)
-* Windows Server 2012
-* Windows Server 2008 R2 (minimum SP1) (Standard, Enterprise, Datacenter)
-
-TFS客户端支持以下版本的操作系统
-
-* Windows 10 (Home, Professional, Enterprise)
-* Windows 8.1 (Basic, Professional, Enterprise)
-* Windows 8
-* Windows 7 (minimum SP1) (Home Premium, Professional, Enterprise, Ultimate)
-
-以下操作系统通过 Team Explorer Everywhere 支持 （见以下*Java Runtime需求）
-
-* Linux with GLIBC 2.3 to 2.11 (x86, x86_64, PowerPC)
-* Mac OS X 10.8+ (Intel Only)
-* Solaris 8 to 11 (SPARC x64)
-* AIX 5.2 to 7.1 (32 and 64 bit)
-* HP-UX 11i v1 to v3 (PA-RISC, Itanium)
-
-**Java Runtime 需求** 
-
-* Oracle Java 1.6+ or IBM Java 1.6+ on Windows 
-* Apple Java 1.6+ on Mac OS X
-* Oracle Java 1.6+ on Linux or Solaris
-* IBM Java 1.6+ on Linux or AIX
-* HP Java 1.6+ on HP-UX
-
-TFS 部署模式
+配置Selenium Grid
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-TFS 可以支持几人到几千人的不同团队规模，提供不同的单机部署模式和多级集群部署模式满足小团队或者大型企业的需求。下图中列出了小型，中型和大型三种不同的部署模式，以及相关的硬件需求和可支持的团队大小。
+.. figure:: images/jenkins-selenium.png
 
-.. figure:: images/tfs-server-deploy-model-01.png
+.. figure:: images/jenkins-selenium-config.png
 
-高可用性方案
+新建配置，并在配置Match nodes from a label expression中使用SecondNode节点的Label设置
+
+.. figure:: images/jenkins-selenium-config-label.png
+
+添加浏览器，IE与Chrome浏览器需要制定driver，（driver可以在讲师处获取）
+
+.. figure:: images/jenkins-selenium-driver.png
+
+保存配置，在节点上运行配置
+
+.. figure:: images/jenkins-selenium-config-node.png
+
+.. figure:: images/jenkins-selenium-node-config.png
+
+如果配置未自动运行，在下图标记出点击开始按钮
+
+.. figure:: images/jinekins-selenium-service-start.png
+
+上传自动化测试项目
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+在SVN中自己团队的Repository下再次创建文件夹，文件夹名称为：用户名+AutoTest
+(上传的源码可在讲师处获取)
+上传后目录结构应类似于：
 
-对于需要持续提供安全可靠的大型团队来说，TFS提供灵活的高可用性方案可供选择，以下列出最常用的高可用性部署方案。也可以根据企业的要求对以下方案进行定制，满足不同的可维护性要求和可用性要求。
+.. figure:: images/jenkins-selenium-sample-repo.png
 
-.. figure:: images/tfs-server-deploy-model-02.png
+打开文件/WilsonBoAutoTest/src/test/java/com/sample/AutoTest.java
+使用Selenium Grid界面的代码
 
-数据备份方案
+.. figure:: images/jenkins-selenium-main.png
+
+替换如下代码：
+
+.. code-block:: java
+
+    driver = new RemoteWebDriver(new URL("http://192.168.0.36:4444/wd/hub"), capability);
+
+在Eclipse中运行单元测试，可以在SecondNode节点服务器的远程桌面中观察到测试的自动化运行。
+
+创建第二个Job，运行自动化测试
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-    
-研发相关数据对任何企业都是关键的资产，TFS提供内置的数据备份和恢复方案供系统管理员使用完成日常的数据备份和简单易操作的数据恢复。
+创建与第一个Job相同类型的Job，只运行自动化测试项目，项目名称为：用户名 + CD
+配置SCM，路径为SVN服务器中团队Repository的 **用户名 + AutoTest** 文件夹
 
-.. figure:: images/tfs-server-deploy-model-03.png
+.. figure:: images/jenkins-selenium-svn.png
 
-TFS 安装说明
+不设置触发方式， 添加Maven生成任务，和发布Junit报告任务
+
+.. figure:: images/jenkins-selenium-job-config.png
+
+手动触发Job， SecondNode服务器上会执行有自动化测试
+
+修改第CI Job
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+现在要模拟CI+CD场景
+配置第CI Job，添加结果发布任务
 
-.. toctree::
-   :titlesonly:
+.. figure:: images/jenkins-selenium-ci-job-config.png
 
-   tfs-installation-ad
-   tfs-installation-accounts
-   tfs-installation-sqlserver
-   tfs-installation-small
-   tfs-installation-middle
-   tfs-installation-large
+添加触发其他项目构建任务
+
+.. figure:: images/jenkins-selenium-ci-job-trigger-cd.png
+
+添加触发器，并设置要传递的参数
+
+.. figure:: images/jenkins-selenium-ci-job-pass-param.png
+
+在Parameters文本框中输入
+
+.. code-block:: java
+
+    PRE_BUILD_NUMBER=${BUILD_NUMBER}
+
+参数PRE_BUILD_NUMBER可以将传递到触发的下游的CD Job中
+
+修改CD Job
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+使用第一个项目传递的构建编号，下载war文件，并部署到staging环境
+
+.. figure:: images/jenkins-selenium-cd-job-config.png
+
+脚本为
+
+.. code-block:: shell
+
+    myFile="webapp.war" 
+    if [ -f "$myFile" ]; then 
+    rm "$myFile" 
+    fi 
+    wget --auth-no-challenge --http-user=wilsonbo --http-password=P2ssw0rd  http://192.168.0.36:8080/job/TrainingMavenProjectCI/${PRE_BUILD_NUMBER}/artifact/multi-module/webapp/target/webapp.war
+    cp webapp.war /opt/tomcat/webapps/staging.war
+
+修改sample项目
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+修改页面/ maven-samples-master/multi-module/webapp/src/main/webapp/index.jsp计算逻辑，签入变更，查看测试结果
+
+.. code-block:: html
+
+    <html>
+        <head>
+        </head>
+        <body>
+            <table>
+                <tr><td><input type="text" id="val1"/></td></tr>
+                <tr><td><input type="text" id="val2"/></td></tr>
+                <tr><td><input type="button" id="btn" onclick="calculate()" value="Calculate"/></td></tr>
+                <tr><td><input type="text"  id="res"/></td></tr> 
+            </table>
+            
+        </body>
+
+    </html>
+    <script>  
+    function calculate()
+    {
+        var val1 = document.getElementById("val1").value;
+        var val2 = document.getElementById("val2").value;
+        document.getElementById("res").value = parseInt(val1) - parseInt(val2);
+    }  
+    </script>
+
+此时会先触发CI Job，当CI Job执行完成后会触发CD Job，运行结果为：
+
+.. figure:: images/jenkins-selenium-auto-test-result.png
+
+.. figure:: images/jenkins-selenium-auto-test-result-cd.png
+
+修改测试用例
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+修改测试用例文件/WilsonBoAutoTest/src/test/java/com/sample/AutoTest.java，文本为
+
+.. code-block:: java
+
+    package test.java.com.sample;
+
+    import java.net.MalformedURLException;
+    import java.net.URL;
+    import junit.framework.TestCase;
+    import static org.junit.Assert.*;
+    import org.junit.Test;
+    import org.openqa.selenium.By;
+    import org.openqa.selenium.Keys;
+    import org.openqa.selenium.WebDriver;
+    import org.openqa.selenium.WebElement;
+    import org.openqa.selenium.firefox.*;
+    import org.openqa.selenium.remote.DesiredCapabilities;
+    import org.openqa.selenium.remote.RemoteWebDriver;
+
+    public class AutoTest {
+
+        @Test
+        public void test() {
+            DesiredCapabilities capability = new DesiredCapabilities();
+            capability = DesiredCapabilities.internetExplorer();
+            WebDriver driver = null;
+            try {
+                driver = new RemoteWebDriver(new URL("http://192.168.0.36:4444/wd/hub"), capability);
+            } catch (MalformedURLException e) {
+                // TODO Auto-generated catch block
+                e.printStackTrace();
+            }
+            driver.manage().window().maximize();
+                driver.get("http://192.168.0.36:8080/staging/");
+                
+                
+                
+                WebElement txtVal1 = driver.findElement(By.id("val1"));
+                WebElement txtVal2 = driver.findElement(By.id("val2"));
+                
+                WebElement btn = driver.findElement(By.id("btn"));
+                
+                
+                
+                txtVal1.sendKeys(new String[]{"1"});
+                txtVal2.sendKeys(new String[]{"2"});
+                
+                btn.click();
+                
+                WebElement res = driver.findElement(By.id("res"));
+            String v = res.getAttribute("value");
+            assertEquals(v, "-1");
+                
+                driver.close();
+        }
+    }
+
+签入源代码，手动运行CI Job。
+
+创建Delivery Pipeline视图
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+与创建仪表板视图一样，创建发布管道视图，视图名称： 用户名+CD
+
+.. figure:: images/jenkins-delivery-veiw.png
+
+在视图配置页面最下方，添加管道，并在initial job中设置第一个创建的Job，下面的final job中创建第二个创建的Job
+保存修改查看视图
+
+.. figure:: images/jenkins-delivery-veiw-config.png
+
+.. figure:: images/jenkins-delivery-veiw-result.png
+

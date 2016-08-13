@@ -22,6 +22,7 @@ Jenkins环境的搭建及运行所需要的软件。
 * SonarQube v5.6.1 （包含cobertura插件及SonarScanner）
 * VisualSVN-Server v3.5.3
 * atlassian jira software v7.1.7
+* Selenium Browser Driver
 
 如果需要请在讲师处获取，或在如下地址下载安装包，链接：http://pan.baidu.com/s/1hsExL9i 密码：c5ax
 
