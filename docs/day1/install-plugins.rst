@@ -15,29 +15,29 @@
 
 按照如下插件列表顺序安装：
 
-* Test-result-analyzer.hpi
-* Cobertura.hpi
-* Jquery.hpi
-* Sonar.hpi
-* Selenium.hpi
-* token-macro.hpi
-* Nodelabelparameter.hpi
-* structs.hpi
-* workflow-step-api.hpi
-* workflow-scm-step.hpi
-* scm-api.hpi
-* mapdb-api
-* subversion.hpi
-* dashboard-view.hpi
-* project-health-report.hpi
-* jira.hpi
-* jenkins-jira-issue-updater.hpi
-* build-pipeline-plugin.hpi
-* promoted-builds.hpi
-* analusis-core.hpi
-* git.hpi
-* parameterized-trigger.hpi
-* delivery-pipeline-plugin.hpi
+    * Test-result-analyzer.hpi
+    * Cobertura.hpi
+    * Jquery.hpi
+    * Sonar.hpi
+    * Selenium.hpi
+    * token-macro.hpi
+    * Nodelabelparameter.hpi
+    * structs.hpi
+    * workflow-step-api.hpi
+    * workflow-scm-step.hpi
+    * scm-api.hpi
+    * mapdb-api
+    * subversion.hpi
+    * dashboard-view.hpi
+    * project-health-report.hpi
+    * jira.hpi
+    * jenkins-jira-issue-updater.hpi
+    * build-pipeline-plugin.hpi
+    * promoted-builds.hpi
+    * analusis-core.hpi
+    * git.hpi
+    * parameterized-trigger.hpi
+    * delivery-pipeline-plugin.hpi
 
 安装完成后再浏览器中输入http://JenkinsServer/restart 重启Jenkins
 
