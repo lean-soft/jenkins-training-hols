@@ -4,7 +4,7 @@ Jenkins 基本持续集成配置
 .. toctree::
    :titlesonly:
 
-   browse-Jenkins
+   browse-jenkins
    config-jenkins-security
    config-jenkins
    install-plugins
