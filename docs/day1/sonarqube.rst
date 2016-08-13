@@ -47,7 +47,7 @@ SonarQube 静态代码检查
     # Root project information
     sonar.projectKey=TP
     sonar.projectName=TrainingProject
-    sonar.projectVersion=1.${SVN_REVISION}
+    sonar.projectVersion=1.0
     
     # Some properties that will be inherited by the modules
     sonar.sources=src

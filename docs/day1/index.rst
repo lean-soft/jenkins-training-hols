@@ -13,5 +13,4 @@ Jenkins 基本持续集成配置
    run-other-node
    unittest
    code-coverage
-   static-code-review
    sonarqube
