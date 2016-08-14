@@ -8,7 +8,11 @@ Jenkins 运行自动化测试
     本文档适用于：
     
     * Jenkins v 1.642.4
-    
+
+在本文中，学员们将学会如何使用Jenkins，协助开发人员完成一个开发闭环
+
+.. figure:: images/jenkins-selenium.jenkins-dev-cycle.png
+
 检查SecondNode是否正常运行
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
@@ -61,9 +65,9 @@ Jenkins 运行自动化测试
 
 在Eclipse中运行单元测试，可以在SecondNode节点服务器的远程桌面中观察到测试的自动化运行。
 
-创建第二个Job，运行自动化测试
+创建CD Job，运行自动化测试
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-创建与第一个Job相同类型的Job，只运行自动化测试项目，项目名称为：用户名 + CD
+创建与CI ob相同类型的Job，部署CI的生成包并运行自动化测试，项目名称为：用户名 + CD
 配置SCM，路径为SVN服务器中团队Repository的 **用户名 + AutoTest** 文件夹
 
 .. figure:: images/jenkins-selenium-svn.png
@@ -73,6 +77,7 @@ Jenkins 运行自动化测试
 .. figure:: images/jenkins-selenium-job-config.png
 
 手动触发Job， SecondNode服务器上会执行有自动化测试
+
 
 修改第CI Job
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -97,22 +102,58 @@ Jenkins 运行自动化测试
 
 参数PRE_BUILD_NUMBER可以将传递到触发的下游的CD Job中
 
+
+创建CreateIssue Job
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+创建CreateIssue项目，运行shell脚本，如果CD Job运行失败则创建JIRA Issue。如果生成成功，并且在SVN提交的注释中有JIRA Issue Key的话，更新现有Jira Issue状态为Done。Job名称为： 用户名 + CreateIssue
+
+.. figure:: images/jenkins-job-create-issue.png
+
+shell脚本如下(替换**的文本)：
+
+.. code-block:: shell
+
+    PROJECTKEY="**JEN**"
+    JENKINSSERVER="**http://192.168.0.36:8080**"
+    JIRASERVER="**http://192.168.0.32:8080**"
+    CIJOBNAME="**TrainingMavenProjectCI**"
+    CDJOBNAME="**DeliveryAndAutoTest**"
+    JR=$(curl $JENKINSSERVER/job/$CDJOBNAME/$FAILED_BUILD_NUMBER/api/xml?depth=1)
+    echo $JR > rad.txt
+    JOBRESULT=$(grep -oP '(?<=<result>)[^<]+' "rad.txt")
+    if [ $(grep -oP '(?<=<msg>)[^<]+' "/root/.jenkins/jobs/$CIJOBNAME/builds/${FIRST_BUILD_NUMBER}/changelog.xml") != "" ]; then
+    JIRAID=$(grep -oP '(?<=<msg>)[^<]+' "/root/.jenkins/jobs/$CIJOBNAME/builds/${FIRST_BUILD_NUMBER}/changelog.xml")
+    curl -D- -u wilsonbo:P2ssw0rd -X POST --data "{\"update\": {\"comment\": [ {\"add\": {\"body\": \"Comment added when resolving issue\"}}]},\"transition\": {\"id\": \"31\"}}" -H "Content-Type: application/json" $JIRASERVER/rest/api/2/issue/$JIRAID/transitions?expand=transitions.fields
+    elif [ $JOBRESULT != "SUCCESS" ]; then
+    curl -D- -u wilsonbo:P2ssw0rd -X POST --data "{\"fields\":   {       \"project\":       {           \"key\": \"$PROJECTKEY\"       },       \"summary\": \"Auto Test Failed, jenkins job number: ${FAILED_BUILD_NUMBER}\",       \"description\": \"please see the details at: $JENKINSSERVER/job/$CDJOBNAME/${FAILED_BUILD_NUMBER}/consoleText\",       \"issuetype\": {          \"name\": \"Bug\"       }   }}" -H "Content-Type: application/json" $JIRASERVER/rest/api/2/issue/
+    fi
+
 修改CD Job
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 使用第一个项目传递的构建编号，下载war文件，并部署到staging环境
 
 .. figure:: images/jenkins-selenium-cd-job-config.png
 
-脚本为
+脚本为(替换**的文本)
 
 .. code-block:: shell
 
+    CIJOBNAME="**TrainingMavenProjectCI**"
     myFile="webapp.war" 
     if [ -f "$myFile" ]; then 
     rm "$myFile" 
     fi 
-    wget --auth-no-challenge --http-user=wilsonbo --http-password=P2ssw0rd  http://192.168.0.36:8080/job/TrainingMavenProjectCI/${PRE_BUILD_NUMBER}/artifact/multi-module/webapp/target/webapp.war
+    wget --auth-no-challenge --http-user=wilsonbo --http-password=P2ssw0rd  http://192.168.0.36:8080/job/$CIJOBNAME/${PRE_BUILD_NUMBER}/artifact/multi-module/webapp/target/webapp.war
     cp webapp.war /opt/tomcat/webapps/staging.war
+
+添加post-build action, **Projects to build**设置为刚才创建JIRA Issue的Job，触发条件为 **Complated(always trigger)**，并添加两个Predefined parameters参数
+
+.. code-block:: text
+
+    FAILED_BUILD_NUMBER=${BUILD_NUMBER}
+    FIRST_BUILD_NUMBER=${PRE_BUILD_NUMBER}
+
+
 
 修改sample项目
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -149,66 +190,46 @@ Jenkins 运行自动化测试
 
 .. figure:: images/jenkins-selenium-auto-test-result-cd.png
 
+检查JIRA系统，新的Bug已经被创建，点击描述中的链接，可以看到生成失败的详细信息。
+
+
 修改测试用例
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 修改测试用例文件/WilsonBoAutoTest/src/test/java/com/sample/AutoTest.java，文本为
 
 .. code-block:: java
 
-    package test.java.com.sample;
+    <html>
+        <head>
+        </head>
+        <body>
+            <table>
+                <tr><td><input type="text" id="val1"/></td></tr>
+                <tr><td><input type="text" id="val2"/></td></tr>
+                <tr><td><input type="button" id="btn" onclick="calculate()" value="Calculate"/></td></tr>
+                <tr><td><input type="text"  id="res"/></td></tr> 
+            </table>
+            
+        </body>
 
-    import java.net.MalformedURLException;
-    import java.net.URL;
-    import junit.framework.TestCase;
-    import static org.junit.Assert.*;
-    import org.junit.Test;
-    import org.openqa.selenium.By;
-    import org.openqa.selenium.Keys;
-    import org.openqa.selenium.WebDriver;
-    import org.openqa.selenium.WebElement;
-    import org.openqa.selenium.firefox.*;
-    import org.openqa.selenium.remote.DesiredCapabilities;
-    import org.openqa.selenium.remote.RemoteWebDriver;
+    </html>
+    <script>  
+    function calculate()
+    {
+        var val1 = document.getElementById("val1").value;
+        var val2 = document.getElementById("val2").value;
+        document.getElementById("res").value = parseInt(val1) + parseInt(val2);
+    }  
+    </script>
 
-    public class AutoTest {
+签入源代码，并且在注释中填写Job运行失败时创建的JIRA Issue Key。
 
-        @Test
-        public void test() {
-            DesiredCapabilities capability = new DesiredCapabilities();
-            capability = DesiredCapabilities.internetExplorer();
-            WebDriver driver = null;
-            try {
-                driver = new RemoteWebDriver(new URL("http://192.168.0.36:4444/wd/hub"), capability);
-            } catch (MalformedURLException e) {
-                // TODO Auto-generated catch block
-                e.printStackTrace();
-            }
-            driver.manage().window().maximize();
-                driver.get("http://192.168.0.36:8080/staging/");
-                
-                
-                
-                WebElement txtVal1 = driver.findElement(By.id("val1"));
-                WebElement txtVal2 = driver.findElement(By.id("val2"));
-                
-                WebElement btn = driver.findElement(By.id("btn"));
-                
-                
-                
-                txtVal1.sendKeys(new String[]{"1"});
-                txtVal2.sendKeys(new String[]{"2"});
-                
-                btn.click();
-                
-                WebElement res = driver.findElement(By.id("res"));
-            String v = res.getAttribute("value");
-            assertEquals(v, "-1");
-                
-                driver.close();
-        }
-    }
+.. note::
 
-签入源代码，手动运行CI Job。
+    只填写JIRA Issue Key，不要填写其他信息
+
+运行后，所有Job运行成功，并且Jira Issue状态为Done。
+
 
 创建Delivery Pipeline视图
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -216,7 +237,7 @@ Jenkins 运行自动化测试
 
 .. figure:: images/jenkins-delivery-veiw.png
 
-在视图配置页面最下方，添加管道，并在initial job中设置第一个创建的Job，下面的final job中创建第二个创建的Job
+在视图配置页面最下方，添加管道，并在initial job中设置第一个创建的Job，**final job**设置为Create Issue Job
 保存修改查看视图
 
 .. figure:: images/jenkins-delivery-veiw-config.png
